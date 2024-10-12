@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Navbar from "@/app/components/Navbar/navbar"; 
-import Image from "next/image";
 import Quiz from "@/app/templates/quiz/quiz";
 
 
