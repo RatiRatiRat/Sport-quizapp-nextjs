@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { quizData } from "../../data/quizdata";
 
 interface UseQuizProps {
@@ -12,23 +12,25 @@ export const useQuiz = ({ sport }: UseQuizProps) => {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [isQuizCompleted, setIsQuizCompleted] = useState(false);
 
-  const questions = quizData[sport] || [];
-
-  const shuffleOptions = useCallback(() => {
-    if (questions[currentQuestionIndex]?.options) {
-      const options = questions[currentQuestionIndex].options;
-      const shuffled = [...options].sort(() => Math.random() - 0.5);
-      setShuffledOptions(shuffled);
-    }
-  }, [questions, currentQuestionIndex]);
+  
+  const questions = useMemo(() => quizData[sport], [sport]);
 
   useEffect(() => {
+   
     if (currentQuestionIndex < questions.length) {
       shuffleOptions();
     } else {
-      setIsQuizCompleted(true);
+      setIsQuizCompleted(true); 
     }
-  }, [currentQuestionIndex, questions.length, shuffleOptions]);
+  }, [currentQuestionIndex, questions]);
+
+  const shuffleOptions = () => {
+    if (questions.length > 0) {
+      const options = questions[currentQuestionIndex]?.options || [];
+      const shuffled = [...options].sort(() => Math.random() - 0.5);
+      setShuffledOptions(shuffled);
+    }
+  };
 
   const handleAnswer = (selectedAnswer: string) => {
     const correctAnswer = questions[currentQuestionIndex]?.answer;
@@ -40,7 +42,7 @@ export const useQuiz = ({ sport }: UseQuizProps) => {
 
   const goToNextQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-    setIsCorrect(null);
+    setIsCorrect(null); 
   };
 
   const resetQuiz = () => {
