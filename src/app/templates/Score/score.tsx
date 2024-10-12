@@ -1,3 +1,4 @@
+"use client"
 interface ScoreProps {
   score: number;
   totalQuestions: number;
